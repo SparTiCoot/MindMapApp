@@ -18,6 +18,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.projetmobile.components.BottomBar
 import com.example.projetmobile.components.HomeScreen
+import com.example.projetmobile.components.SubjectsScreen
 import com.example.projetmobile.components.TopBar
 import com.example.projetmobile.ui.theme.ProjetMobileTheme
 
@@ -65,6 +66,14 @@ class MainActivity : ComponentActivity() {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                         HomeScreen(paddingV)
                     }
+                }
+                composable("memoryAid") {
+                    showBars.value = true
+                    com.example.projetmobile.components.MemoryAidScreen()
+                }
+                composable("loadingSubjects") {
+                    showBars.value = true
+                    SubjectsScreen()
                 }
             }
         }
