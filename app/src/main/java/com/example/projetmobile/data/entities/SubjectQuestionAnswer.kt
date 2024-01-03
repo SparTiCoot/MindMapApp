@@ -3,7 +3,6 @@ package com.example.projetmobile.data.entities
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
-import javax.security.auth.Subject
 
 @Entity(
     indices = [

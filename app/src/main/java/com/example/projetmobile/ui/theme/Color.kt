@@ -12,3 +12,6 @@ val Pink40 = Color(0xFF7D5260)
 
 val ButtonColor = Color(0xFF344C75)
 val IconMenuTopBottomColor = Color(0xFFFFFFFF)
+val IconButtonColor = Color(0xFF000000)
+val TextColor = Color(0xFF000000)
+val OutlinedTextFieldColor = Color(0xFF000000)
