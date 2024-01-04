@@ -10,5 +10,6 @@ data class Question(
     @ColumnInfo(name = "questionText") val questionText: String,
     @ColumnInfo(name = "status") var status: Int = 1,
     @ColumnInfo(name = "idSubject") val idSubject: Int,
+    @ColumnInfo(name = "nextRevisionDate") val nextRevisionDate: Long? = null,
     @ColumnInfo(name = "answer") val ans: Boolean = false,
 )

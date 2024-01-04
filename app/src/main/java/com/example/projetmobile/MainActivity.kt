@@ -20,6 +20,8 @@ import androidx.navigation.navArgument
 import com.example.projetmobile.components.AddQuestionAnswersScreen
 import com.example.projetmobile.components.BottomBar
 import com.example.projetmobile.components.HomeScreen
+import com.example.projetmobile.components.LoadingQuestionsScreen
+import com.example.projetmobile.components.MemoryAidScreen
 import com.example.projetmobile.components.ModifyQuestionsScreen
 import com.example.projetmobile.components.SubjectsScreen
 import com.example.projetmobile.components.TopBar
@@ -70,7 +72,7 @@ class MainActivity : ComponentActivity() {
                 }
                 composable("memoryAid") {
                     showBars.value = true
-                    com.example.projetmobile.components.MemoryAidScreen()
+                    MemoryAidScreen(navController = navController)
                 }
                 composable("loadingSubjects") {
                     showBars.value = true
@@ -86,6 +88,18 @@ class MainActivity : ComponentActivity() {
                         navController = navController, idSubject = idSubjectReceived
                     )
                 }
+                composable(
+                    route = "LoadingQuestionsScreen/{subjectIdToSend}",
+                    arguments = listOf(navArgument("subjectIdToSend") { type = NavType.IntType }),
+                ) { backStackEntry ->
+                    showBars.value = true
+                    val idSubjectReceived =
+                        backStackEntry.arguments?.getInt("subjectIdToSend") ?: -1
+                    LoadingQuestionsScreen(
+                        navController = navController,
+                        idSubject = idSubjectReceived,
+                    )
+                }
                 composable(route = "AddQuestionAnswersScreen/{idSubject}",
                     arguments = listOf(navArgument("idSubject") {
                         type = NavType.IntType
@@ -97,6 +111,10 @@ class MainActivity : ComponentActivity() {
                             idSubject = idSubjectReceived, navController = navController
                         )
                     }
+                }
+                composable("MemoryAidScreen") {
+                    showBars.value = true
+                    MemoryAidScreen(navController = navController)
                 }
             }
         }
