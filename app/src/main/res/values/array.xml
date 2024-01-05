@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="nom_fichier">
+        <item>jeu_questions</item>
+    </string-array>
+    <string-array name="fichier_url">
+        <item>https://nano.up8.site/jeu_questions.json</item>
+    </string-array>
+</resources>

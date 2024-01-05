@@ -42,7 +42,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.projetmobile.data.entities.Answer
 import com.example.projetmobile.ui.MyViewModel
-import com.example.projetmobile.ui.ViewModelSettings
+import com.example.projetmobile.ui.SettingsViewModel
 import com.example.projetmobile.ui.theme.ButtonColor
 import com.example.projetmobile.ui.theme.ColorUtils.colorsList
 import com.example.projetmobile.ui.theme.IconButtonColor
@@ -54,10 +54,10 @@ fun ModifyQuestionsScreen(
     navController: NavHostController,
     idSubject: Int,
     viewModel: MyViewModel = viewModel(),
-    viewModelSettings: ViewModelSettings = viewModel()
+    settingsViewModel: SettingsViewModel = viewModel()
 ) {
-    val backgroundColor by viewModelSettings.getBackgroundColor()
-        .collectAsState(initial = viewModelSettings.defaultBackgroundColor)
+    val backgroundColor by settingsViewModel.getBackgroundColor()
+        .collectAsState(initial = settingsViewModel.defaultBackgroundColor)
 
     val questionsWithAnswers by viewModel.questionsWithAnswers.collectAsState(emptyList())
 

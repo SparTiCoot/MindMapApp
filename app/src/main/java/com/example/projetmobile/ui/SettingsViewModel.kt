@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.map
 
 val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "settings")
 
-class ViewModelSettings(application: Application) : AndroidViewModel(application) {
+class SettingsViewModel(application: Application) : AndroidViewModel(application) {
     private val backgroundColor = intPreferencesKey("background_color")
     private val myStore = application.dataStore
 

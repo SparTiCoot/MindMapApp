@@ -46,7 +46,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.projetmobile.data.entities.Answer
 import com.example.projetmobile.ui.MyViewModel
-import com.example.projetmobile.ui.ViewModelSettings
+import com.example.projetmobile.ui.SettingsViewModel
 import com.example.projetmobile.ui.theme.ButtonColor
 import com.example.projetmobile.ui.theme.IconButtonColor
 import com.example.projetmobile.ui.theme.PurpleGrey40
@@ -78,11 +78,11 @@ fun LoadingQuestionsScreen(
 fun QuestionsScreen(
     navController: NavHostController,
     viewModel: MyViewModel,
-    viewModelSettings: ViewModelSettings = viewModel(),
+    settingsViewModel: SettingsViewModel = viewModel(),
     idSubject: Int
 ) {
-    val backgroundColor by viewModelSettings.getBackgroundColor()
-        .collectAsState(initial = viewModelSettings.defaultBackgroundColor)
+    val backgroundColor by settingsViewModel.getBackgroundColor()
+        .collectAsState(initial = settingsViewModel.defaultBackgroundColor)
 
     var selectedAnswer by remember { mutableStateOf("") }
     var correctAnswer by remember { mutableStateOf<Answer?>(null) }

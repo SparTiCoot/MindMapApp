@@ -35,7 +35,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.projetmobile.ui.MyViewModel
-import com.example.projetmobile.ui.ViewModelSettings
+import com.example.projetmobile.ui.SettingsViewModel
 import com.example.projetmobile.ui.theme.ButtonColor
 import com.example.projetmobile.ui.theme.IconButtonColor
 import com.example.projetmobile.ui.theme.OutlinedTextFieldColor
@@ -46,7 +46,7 @@ fun AddQuestionAnswersScreen(
     idSubject: Int,
     navController: NavHostController,
     model: MyViewModel = viewModel(),
-    viewModel: ViewModelSettings = viewModel()
+    viewModel: SettingsViewModel = viewModel()
 ) {
     val backgroundColor by viewModel.backgroundColorFlow.collectAsState(initial = 0xFFCCCCCC.toInt())
 

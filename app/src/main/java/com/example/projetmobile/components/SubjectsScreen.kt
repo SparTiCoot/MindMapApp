@@ -42,7 +42,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.projetmobile.data.entities.Subject
 import com.example.projetmobile.ui.MyViewModel
-import com.example.projetmobile.ui.ViewModelSettings
+import com.example.projetmobile.ui.SettingsViewModel
 import com.example.projetmobile.ui.theme.ButtonColor
 import com.example.projetmobile.ui.theme.PurpleGrey40
 import com.example.projetmobile.ui.theme.TextColor
@@ -51,10 +51,10 @@ import com.example.projetmobile.ui.theme.TextColor
 fun SubjectsScreen(
     navController: NavHostController,
     model: MyViewModel = viewModel(),
-    viewModelSettings: ViewModelSettings = viewModel()
+    settingsViewModel: SettingsViewModel = viewModel()
 ) {
-    val backgroundColor by viewModelSettings.getBackgroundColor()
-        .collectAsState(initial = viewModelSettings.defaultBackgroundColor)
+    val backgroundColor by settingsViewModel.getBackgroundColor()
+        .collectAsState(initial = settingsViewModel.defaultBackgroundColor)
 
     val subjects by model.getSubjects().collectAsState(initial = emptyList())
 

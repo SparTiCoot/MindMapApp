@@ -16,7 +16,7 @@ import com.example.projetmobile.data.entities.SubjectQuestionAnswer
         Answer::class,
         SubjectQuestionAnswer::class,
     ],
-    version = 43,
+    version = 44,
     exportSchema = false,
 )
 abstract class LearnASubjectDB : RoomDatabase() {
