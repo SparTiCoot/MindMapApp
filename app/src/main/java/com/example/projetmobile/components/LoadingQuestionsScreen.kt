@@ -1,6 +1,10 @@
 package com.example.projetmobile.components
 
+import android.content.Context
+import android.content.Intent
 import android.content.pm.ActivityInfo
+import android.os.Handler
+import android.os.Looper
 import androidx.activity.ComponentActivity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -44,9 +48,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import com.example.projetmobile.R
 import com.example.projetmobile.data.entities.Answer
+import com.example.projetmobile.ui.MusicService
 import com.example.projetmobile.ui.MyViewModel
 import com.example.projetmobile.ui.SettingsViewModel
+import com.example.projetmobile.ui.getUriFromRes
 import com.example.projetmobile.ui.theme.ButtonColor
 import com.example.projetmobile.ui.theme.IconButtonColor
 import com.example.projetmobile.ui.theme.PurpleGrey40
@@ -81,6 +88,7 @@ fun QuestionsScreen(
     settingsViewModel: SettingsViewModel = viewModel(),
     idSubject: Int
 ) {
+    val context = LocalContext.current
     val backgroundColor by settingsViewModel.getBackgroundColor()
         .collectAsState(initial = settingsViewModel.defaultBackgroundColor)
 
@@ -189,6 +197,7 @@ fun QuestionsScreen(
             if (goodAnswer) {
                 LaunchedEffect(Unit) {
                     showDialog = true
+                    playSong(context, R.raw.correct_answer)
                 }
                 AlertDialog(onDismissRequest = { goodAnswer = false },
                     title = { Text("Bonne réponse !") },
@@ -210,6 +219,7 @@ fun QuestionsScreen(
             if (wrongAnswer) {
                 LaunchedEffect(Unit) {
                     showDialog = true
+                    playSong(context, R.raw.wrong_answer)
                 }
                 AlertDialog(onDismissRequest = { wrongAnswer = false },
                     title = { Text("Mauvaise réponse !") },
@@ -229,6 +239,20 @@ fun QuestionsScreen(
             }
         }
     }
+}
+
+fun playSong(context: Context, fName: Int) {
+    val uri = getUriFromRes(context, fName)
+    val intent = Intent(context, MusicService::class.java)
+    intent.data = uri
+    intent.action = MusicService.START_ACTION
+    context.startService(intent)
+
+    Handler(Looper.getMainLooper()).postDelayed({
+        val stopIntent = Intent(context, MusicService::class.java)
+        stopIntent.action = MusicService.STOP_ACTION
+        context.startService(stopIntent)
+    }, 1000)
 }
 
 

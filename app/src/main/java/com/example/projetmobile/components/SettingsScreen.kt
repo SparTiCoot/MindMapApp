@@ -1,5 +1,17 @@
 package com.example.projetmobile.components
 
+import android.Manifest
+import android.app.Notification
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
+import android.content.Context
+import android.content.Intent
+import android.os.Build
+import android.util.Log
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -31,22 +43,46 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import androidx.work.PeriodicWorkRequest
+import androidx.work.WorkManager
+import com.example.projetmobile.MainActivity
 import com.example.projetmobile.R
+import com.example.projetmobile.ui.RappelWorker
 import com.example.projetmobile.ui.SettingsViewModel
+import com.example.projetmobile.ui.theme.ButtonColor
 import com.example.projetmobile.ui.theme.ColumnColor
 import com.example.projetmobile.ui.theme.IconButtonColor
 import com.example.projetmobile.ui.theme.Orange80
 import com.example.projetmobile.ui.theme.Purple80
+import java.util.concurrent.TimeUnit
+
+const val CHANNEL_ID = "MY_CHANNEL_ID"
+
+lateinit var workManager: WorkManager
 
 @Composable
 fun SettingsScreen(
     navController: NavHostController, viewModelSettings: SettingsViewModel = viewModel()
 ) {
+    val context = LocalContext.current
+    val permissionLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { isGranted ->
+        if (isGranted) {
+            Log.d("permissions", "granted")
+        } else {
+            Log.d("permissions", "denied")
+        }
+    }
+
     val backgroundColor by viewModelSettings.backgroundColorFlow.collectAsState(initial = viewModelSettings.defaultBackgroundColor)
     val bodyFS by viewModelSettings.bodyFontSizeFlow.collectAsState(initial = viewModelSettings.defaultBodyFontSize)
     val titleFS by viewModelSettings.titleFontSizeFlow.collectAsState(initial = viewModelSettings.defaultTitleFontSize)
@@ -55,6 +91,9 @@ fun SettingsScreen(
     val optionsBodyFS = listOf("12", "14", "16")
     val selectedOptionTitle = remember { mutableIntStateOf(-1) }
     val selectedOptionBody = remember { mutableIntStateOf(-1) }
+
+    createChannel(context)
+    workManager = WorkManager.getInstance(context)
 
     LazyColumn(
         modifier = Modifier
@@ -80,6 +119,42 @@ fun SettingsScreen(
                         contentDescription = "Back",
                         tint = IconButtonColor
                     )
+                }
+            }
+        }
+
+        item {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)
+                    .background(ColumnColor, RoundedCornerShape(16.dp)),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.padding(horizontal = 8.dp, vertical = 8.dp)
+                ) {
+                    Button(
+                        onClick = {
+                            if (!NotificationManagerCompat.from(context)
+                                    .areNotificationsEnabled()
+                            ) {
+                                permissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+                            } else {
+                                scheduleWork()
+                            }
+                        },
+                        colors = ButtonDefaults.buttonColors(
+                            ButtonColor, Color.White
+                        ),
+                    ) {
+                        Text(
+                            text = "Plannifier Notifications",
+                            fontSize = bodyFS.sp,
+                        )
+                    }
                 }
             }
         }
@@ -288,4 +363,40 @@ fun SettingsScreen(
             }
         }
     }
+}
+
+fun createChannel(c: Context) {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        val name = "MY_CHANNEL"
+        val descriptionText = "Notification Channel"
+        val importance = NotificationManager.IMPORTANCE_DEFAULT
+        val mChannel = NotificationChannel(CHANNEL_ID, name, importance)
+        mChannel.description = descriptionText
+        val notificationManager =
+            c.getSystemService(ComponentActivity.NOTIFICATION_SERVICE) as NotificationManager
+        notificationManager.createNotificationChannel(mChannel)
+    }
+}
+
+fun createNotif(c: Context) {
+    val intent1 = Intent(c, MainActivity::class.java)
+    val pending1 = PendingIntent.getActivity(c, 1, intent1, PendingIntent.FLAG_IMMUTABLE)
+    val builder = NotificationCompat.Builder(c, CHANNEL_ID).setSmallIcon(R.drawable.small)
+        .setContentTitle("Il est l'heure du savoir !").setContentText("Viens jouer !")
+        .setPriority(NotificationCompat.PRIORITY_DEFAULT).setAutoCancel(true)
+        .setContentIntent(pending1).setCategory(Notification.CATEGORY_REMINDER)
+    val myNotif = builder.build()
+    val notificationManager =
+        c.getSystemService(ComponentActivity.NOTIFICATION_SERVICE) as NotificationManager
+    notificationManager.notify(44, myNotif)
+}
+
+fun scheduleWork(): PeriodicWorkRequest {
+    val initialDelay = 15L
+    val workRequest = PeriodicWorkRequest.Builder(
+        RappelWorker::class.java, 15, TimeUnit.MINUTES
+    ).setInitialDelay(initialDelay, TimeUnit.MINUTES).build()
+
+    workManager.enqueue(workRequest)
+    return workRequest
 }
