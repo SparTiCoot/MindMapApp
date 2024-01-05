@@ -49,6 +49,7 @@ fun AddQuestionAnswersScreen(
     viewModel: SettingsViewModel = viewModel()
 ) {
     val backgroundColor by viewModel.backgroundColorFlow.collectAsState(initial = 0xFFCCCCCC.toInt())
+    val bodyFS by viewModel.bodyFontSizeFlow.collectAsState(initial = 14)
 
     var questionText by remember { mutableStateOf("") }
     val answers = remember { mutableStateListOf("") }
@@ -87,7 +88,7 @@ fun AddQuestionAnswersScreen(
                     Text(
                         text = "Nouvelle question",
                         color = OutlinedTextFieldColor,
-                        fontSize = 16.sp
+                        fontSize = bodyFS.sp
                     )
                 },
                 modifier = Modifier
@@ -98,7 +99,7 @@ fun AddQuestionAnswersScreen(
                 Text(
                     text = "La première réponse sera considérée comme la bonne réponse !",
                     color = Color.Black,
-                    fontSize = 16.sp,
+                    fontSize = bodyFS.sp,
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 18.dp, vertical = 5.dp),
@@ -175,7 +176,7 @@ fun AddQuestionAnswersScreen(
                     ),
                 ) {
                     Text(
-                        text = "Valider", fontSize = 16.sp
+                        text = "Valider", fontSize = bodyFS.sp
                     )
                 }
                 if (answers.size < 3) {
@@ -189,7 +190,7 @@ fun AddQuestionAnswersScreen(
                         ),
                     ) {
                         Text(
-                            text = "Ajouter une réponse", fontSize = 16.sp
+                            text = "Ajouter une réponse", fontSize = bodyFS.sp
                         )
                     }
                 }

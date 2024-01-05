@@ -37,6 +37,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.projetmobile.data.entities.Subject
 import com.example.projetmobile.ui.MyViewModel
+import com.example.projetmobile.ui.SettingsViewModel
 import com.example.projetmobile.ui.theme.ButtonColor
 import com.example.projetmobile.ui.theme.ColorUtils
 import com.example.projetmobile.ui.theme.TextColor
@@ -46,15 +47,21 @@ import kotlinx.coroutines.flow.firstOrNull
 fun MemoryAidScreen(
     navController: NavHostController,
     model: MyViewModel = viewModel(),
+    modelSettings: SettingsViewModel = viewModel()
 ) {
+    val backgroundColorS by modelSettings.getBackgroundColor()
+        .collectAsState(initial = modelSettings.defaultBackgroundColor)
+
+    val bodyFS by modelSettings.bodyFontSizeFlow.collectAsState(initial = 14)
+
     Column(
         Modifier
             .fillMaxSize()
-            .background(Color.White),
+            .background(Color(backgroundColorS)),
     ) {
         val subjects by model.getSubjects().collectAsState(initial = emptyList())
 
-        SubjectsPlayView(navController, subjects, model)
+        SubjectsPlayView(navController, subjects, model, bodyFS)
     }
 }
 
@@ -63,8 +70,8 @@ fun SubjectsPlayView(
     navController: NavHostController,
     subjects: List<Subject>,
     model: MyViewModel,
-) {
-
+    bodyFS: Int,
+    ) {
     var showDialogNeedToWait by remember { mutableStateOf(false) }
 
     var isLoadingQuestions by remember { mutableStateOf(false) }
@@ -117,7 +124,7 @@ fun SubjectsPlayView(
                         modifier = Modifier.weight(1f),
                         style = TextStyle(
                             color = TextColor,
-                            fontSize = 16.sp,
+                            fontSize = bodyFS.sp,
                             fontWeight = FontWeight.Bold,
                         ),
                     )

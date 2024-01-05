@@ -4,6 +4,7 @@ import android.app.Application
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.AndroidViewModel
@@ -23,6 +24,8 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.json.JSONArray
+import org.json.JSONObject
 import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneId
@@ -89,6 +92,77 @@ class MyViewModel(application: Application) : AndroidViewModel(application) {
                             )
                         )
                     }
+                }
+            }
+        }
+    }
+
+    fun insertDataFromJson(myJSON: JSONObject, snackbarHostState: SnackbarHostState) {
+        viewModelScope.launch {
+            val subjectsArray = myJSON.getJSONArray("sujets")
+
+            withContext(Dispatchers.IO) {
+                for (i in 0 until subjectsArray.length()) {
+                    val subjectObject = subjectsArray.getJSONObject(i)
+                    val subjectName = subjectObject.getString("nom")
+                    val existingSubject = myDao.checkIfSubjectExists(subjectName)
+
+                    if (existingSubject == null) {
+                        val newSubject = Subject(name = subjectName)
+                        val subjectId = myDao.insertSubject(newSubject)
+                        val questionsArray = subjectObject.getJSONArray("questions")
+                        insertQuestions(questionsArray, subjectId.toInt())
+                        snackbarHostState.showSnackbar("Ajout du sujet : '$subjectName' !")
+                    } else snackbarHostState.showSnackbar("Sujet '$subjectName' déjà ajouter !")
+                }
+            }
+        }
+    }
+
+    private suspend fun insertQuestions(
+        questionsArray: JSONArray, subjectId: Int
+    ) {
+        withContext(Dispatchers.IO) {
+            for (j in 0 until questionsArray.length()) {
+                val questionObject = questionsArray.getJSONObject(j)
+                val questionText = questionObject.getString("question")
+                val existingQuestion = myDao.checkIfQuestionExists(
+                    questionText = questionText, idSubject = subjectId
+                )
+
+                if (existingQuestion == null) {
+                    val newQuestion = Question(
+                        questionText = questionText,
+                        idSubject = subjectId,
+                    )
+                    val questionId = myDao.insertQuestionAndGetId(newQuestion)
+                    val answersArray = questionObject.getJSONArray("reponses")
+                    insertAnswers(answersArray, questionId.toInt(), subjectId)
+                }
+            }
+        }
+    }
+
+    private suspend fun insertAnswers(
+        answersArray: JSONArray, questionId: Int, subjectId: Int
+    ) {
+        withContext(Dispatchers.IO) {
+            for (k in 0 until answersArray.length()) {
+                val answerText = answersArray.getString(k)
+                val existingAnswer = myDao.checkIfAnswerExists(answerText, subjectId)
+                val isCorrect = k == 0
+
+                if (existingAnswer == null) {
+                    val newAnswer = Answer(answerText = answerText, isCorrect = isCorrect)
+                    val answerId = myDao.insertAnswerAndGetId(newAnswer)
+
+                    myDao.insertSubjectQuestionAnswer(
+                        SubjectQuestionAnswer(
+                            idSubject = subjectId,
+                            idQuestion = questionId,
+                            idAnswer = answerId.toInt()
+                        )
+                    )
                 }
             }
         }

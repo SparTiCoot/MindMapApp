@@ -55,6 +55,7 @@ fun SubjectsScreen(
 ) {
     val backgroundColor by settingsViewModel.getBackgroundColor()
         .collectAsState(initial = settingsViewModel.defaultBackgroundColor)
+    val bodyFS by settingsViewModel.bodyFontSizeFlow.collectAsState(initial = 14)
 
     val subjects by model.getSubjects().collectAsState(initial = emptyList())
 
@@ -63,8 +64,9 @@ fun SubjectsScreen(
             .fillMaxSize()
             .background(Color(backgroundColor)),
     ) {
-        AddingSubjectView(onAddSubject = model::addSubjectIfNotExists)
+        AddingSubjectView(onAddSubject = model::addSubjectIfNotExists, bodyFS)
         ShowListOfSubjectsView(
+            bodyFS = bodyFS,
             subjects = subjects,
             onDeleteSubject = model::deleteSubjectAndHisQuestion,
             navController = navController,
@@ -74,7 +76,7 @@ fun SubjectsScreen(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddingSubjectView(onAddSubject: (String) -> Unit) {
+fun AddingSubjectView(onAddSubject: (String) -> Unit, bodyFS: Int) {
     var newSubjectText by remember { mutableStateOf("") }
 
     Box(
@@ -129,6 +131,7 @@ fun AddingSubjectView(onAddSubject: (String) -> Unit) {
 
 @Composable
 fun ShowListOfSubjectsView(
+    bodyFS: Int,
     subjects: List<Subject>,
     onDeleteSubject: (Int) -> Unit,
     navController: NavHostController,
@@ -142,6 +145,7 @@ fun ShowListOfSubjectsView(
         ) {
             items(subjects) { subject ->
                 SubjectItem(
+                    bodyFS = bodyFS,
                     subject = subject,
                     onDeleteSubject = onDeleteSubject,
                     navController = navController,
@@ -153,6 +157,7 @@ fun ShowListOfSubjectsView(
 
 @Composable
 fun SubjectItem(
+    bodyFS: Int,
     subject: Subject,
     onDeleteSubject: (Int) -> Unit,
     navController: NavHostController,
@@ -175,7 +180,7 @@ fun SubjectItem(
             ),
         ) {
             Text(
-                text = "Modifier", fontSize = 16.sp
+                text = "Modifier", fontSize = bodyFS.sp
             )
         }
         Text(
@@ -183,7 +188,7 @@ fun SubjectItem(
             modifier = Modifier.weight(1f),
             style = TextStyle(
                 color = TextColor,
-                fontSize = 16.sp,
+                fontSize = bodyFS.sp,
                 fontWeight = FontWeight.Bold,
             ),
         )

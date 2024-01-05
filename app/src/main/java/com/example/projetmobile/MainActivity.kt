@@ -1,5 +1,6 @@
 package com.example.projetmobile
 
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -23,6 +24,7 @@ import com.example.projetmobile.components.HomeScreen
 import com.example.projetmobile.components.LoadingQuestionsScreen
 import com.example.projetmobile.components.MemoryAidScreen
 import com.example.projetmobile.components.ModifyQuestionsScreen
+import com.example.projetmobile.components.SettingsScreen
 import com.example.projetmobile.components.SubjectsScreen
 import com.example.projetmobile.components.TopBar
 import com.example.projetmobile.ui.theme.ProjetMobileTheme
@@ -68,7 +70,9 @@ class MainActivity : ComponentActivity() {
             ) {
                 composable("home") {
                     showBars.value = true
-                    HomeScreen(paddingV)
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                        HomeScreen(snackbarHostState = snackbarHostState, paddingV = paddingV)
+                    }
                 }
                 composable("memoryAid") {
                     showBars.value = true
@@ -111,6 +115,10 @@ class MainActivity : ComponentActivity() {
                             idSubject = idSubjectReceived, navController = navController
                         )
                     }
+                }
+                composable("Settings") {
+                    showBars.value = true
+                    SettingsScreen(navController = navController)
                 }
                 composable("MemoryAidScreen") {
                     showBars.value = true

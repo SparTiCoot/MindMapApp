@@ -33,9 +33,9 @@ fun TopBar(navController: NavHostController) {
             contentDescription = "settings",
             modifier = Modifier
                 .padding(end = 20.dp)
-                /*.clickable {
+                .clickable {
                     navController.navigate("Settings")
-                }*/,
+                },
             tint = IconMenuTopBottomColor
         )
     }

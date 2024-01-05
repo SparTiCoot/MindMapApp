@@ -8,11 +8,12 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.net.Uri
 import android.os.Environment
-import android.util.Log
+import androidx.compose.material3.SnackbarHostState
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.projetmobile.R
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.json.JSONException
 import org.json.JSONObject
@@ -42,11 +43,12 @@ class DownloadViewModel(private val application: Application) : AndroidViewModel
         application.registerReceiver(receiver, filter, Context.RECEIVER_EXPORTED)
     }
 
-    fun doDownload() {
+    fun doDownload(myViewModel: MyViewModel, snackbarHostState: SnackbarHostState) {
         val fileName = fileNames[0]
         val fileUrl = fileUrls[0]
 
         startDownload(fileUrl, "${fileName}.json")
+        getJSONAndInsertData(myViewModel, snackbarHostState)
     }
 
     private fun startDownload(adr: String, fName: String) {
@@ -57,7 +59,6 @@ class DownloadViewModel(private val application: Application) : AndroidViewModel
                 application, Environment.DIRECTORY_DOCUMENTS, fName
             )
         idLoad = downloadManager.enqueue(request)
-        Log.d("JSON", "Tu as bien téléchargé ton fichier.")
     }
 
     private fun createJson(fName: String) {
@@ -75,8 +76,20 @@ class DownloadViewModel(private val application: Application) : AndroidViewModel
         }
     }
 
+    private fun getJSON(): JSONObject? {
+        return myJSON
+    }
+
     private fun getJSONAndInsertData(
+        myViewModel: MyViewModel, snackbarHostState: SnackbarHostState
     ) {
-        //TODO : Gérer la logique d'insertion des données depuis un JSON.
+        viewModelScope.launch {
+            while (getJSON() == null) {
+                delay(100)
+            }
+            getJSON()?.let {
+                myViewModel.insertDataFromJson(it, snackbarHostState)
+            }
+        }
     }
 }
