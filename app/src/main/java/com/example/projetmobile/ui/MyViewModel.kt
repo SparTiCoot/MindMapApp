@@ -1,9 +1,7 @@
 package com.example.projetmobile.ui
 
 import android.app.Application
-import android.os.Build
 import android.util.Log
-import androidx.annotation.RequiresApi
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -253,8 +251,6 @@ class MyViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-
-
     private fun updateNumberOfQuestions(updatedQuestions: List<QuestionAnswerPair>) {
         _numberOfQuestions.value = updatedQuestions.size
     }
@@ -289,7 +285,6 @@ class MyViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-
     fun deleteAnswer(idAnswer: Int) {
         viewModelScope.launch {
             myDao.deleteAnswer(idAnswer)
@@ -299,7 +294,6 @@ class MyViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     fun calculateNextRevisionDate(status: Int): Long {
         val revisionPeriod = (2.0.pow(status - 1) * 12 * 60 * 60 * 1000).toLong()
         val currentDate = System.currentTimeMillis()
@@ -314,5 +308,4 @@ class MyViewModel(application: Application) : AndroidViewModel(application) {
         Log.d("TAG", "Next Revision Date: $formattedDate")
         return nextRevisionDate
     }
-
 }

@@ -255,10 +255,10 @@ fun playSong(context: Context, fName: Int) {
     }, 1000)
 }
 
-
 @Composable
 fun AnswerItem(
     text: String,
+    bodyFS: Int,
     onAnswerSelected: (String) -> Unit,
     isSelected: Boolean,
 ) {
@@ -278,7 +278,7 @@ fun AnswerItem(
             .padding(8.dp)
             .background(color = backgroundColor),
         style = TextStyle(
-            color = Color.Black, fontSize = 16.sp
+            color = Color.Black, fontSize = bodyFS.sp
         ),
     )
 }
@@ -323,8 +323,11 @@ fun QuestionAnswersSection(
     answers: List<Answer>,
     onAnswerSelected: (String) -> Unit,
     onValidateClicked: () -> Unit,
+    settingsViewModel: SettingsViewModel = viewModel(),
     viewModel: MyViewModel,
 ) {
+    val bodyFS by settingsViewModel.bodyFontSizeFlow.collectAsState(initial = 14)
+    val titleFS by settingsViewModel.titleFontSizeFlow.collectAsState(initial = 16)
 
     var selectedAnswer by remember { mutableStateOf("") }
     var deleteQuestion by remember { mutableStateOf(false) }
@@ -344,7 +347,7 @@ fun QuestionAnswersSection(
                 textAlign = TextAlign.Center,
                 style = TextStyle(
                     color = TextColor,
-                    fontSize = 16.sp,
+                    fontSize = titleFS.sp,
                     fontWeight = FontWeight.Bold,
                 ),
                 modifier = Modifier.padding(bottom = 25.dp, end = 20.dp),
@@ -354,7 +357,7 @@ fun QuestionAnswersSection(
         if (answers.size > 1) {
             items(answers) { answer ->
                 AnswerItem(
-                    text = answer.answerText,  onAnswerSelected = {
+                    text = answer.answerText, bodyFS = bodyFS, onAnswerSelected = {
                         selectedAnswer = it
                         onAnswerSelected(it)
                     }, isSelected = selectedAnswer == answer.answerText
@@ -391,7 +394,7 @@ fun QuestionAnswersSection(
             ) {
                 Text(
                     text = "Valider ma réponse",
-                    fontSize = 16.sp,
+                    fontSize = bodyFS.sp,
                     fontWeight = FontWeight.Bold,
                 )
             }
@@ -412,7 +415,7 @@ fun QuestionAnswersSection(
             ) {
                 Text(
                     text = "Supprimer la question",
-                    fontSize = 16.sp,
+                    fontSize = bodyFS.sp,
                     fontWeight = FontWeight.Bold,
                 )
             }
@@ -433,7 +436,7 @@ fun QuestionAnswersSection(
             ) {
                 Text(
                     text = "Afficher la réponse",
-                    fontSize = 16.sp,
+                    fontSize = bodyFS.sp,
                     fontWeight = FontWeight.Bold,
                 )
             }
@@ -502,7 +505,8 @@ fun QuestionAnswersSection(
                         ) {
                             Text(text = "OK")
                         }
-                    })
+                    }
+                )
             }
         }
     }

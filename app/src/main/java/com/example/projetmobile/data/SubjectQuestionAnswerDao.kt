@@ -48,11 +48,11 @@ interface SubjectQuestionAnswerDao {
 
     @Query(
         """
-    SELECT q.*
-    FROM Question q
-    WHERE q.idSubject = :idSubject AND (q.nextRevisionDate IS NULL OR q.nextRevisionDate <= :currentDate)
-    ORDER BY RANDOM()
-"""
+        SELECT q.*
+        FROM Question q
+        WHERE q.idSubject = :idSubject AND (q.nextRevisionDate IS NULL OR q.nextRevisionDate <= :currentDate)
+        ORDER BY RANDOM()
+        """
     )
     fun getQuestionsForRevisionRandomly(idSubject: Int, currentDate: Long): Flow<List<Question>>
 
@@ -69,7 +69,6 @@ interface SubjectQuestionAnswerDao {
         idSubject: Int,
         idQuestion: Int,
     ): Flow<List<Answer>>
-
 
     @Transaction
     @Query(

@@ -392,10 +392,10 @@ fun createNotif(c: Context) {
 }
 
 fun scheduleWork(): PeriodicWorkRequest {
-    val initialDelay = 15L
+    val initialDelay = 24L
     val workRequest = PeriodicWorkRequest.Builder(
-        RappelWorker::class.java, 15, TimeUnit.MINUTES
-    ).setInitialDelay(initialDelay, TimeUnit.MINUTES).build()
+        RappelWorker::class.java, 24, TimeUnit.HOURS
+    ).setInitialDelay(initialDelay, TimeUnit.HOURS).build()
 
     workManager.enqueue(workRequest)
     return workRequest

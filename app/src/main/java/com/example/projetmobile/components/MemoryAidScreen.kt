@@ -181,7 +181,6 @@ fun SubjectsPlayView(
                     isLoadingQuestions = false
                 }
             }
-
         }
 
         if (showDialogNeedToWait) {
@@ -202,7 +201,8 @@ fun SubjectsPlayView(
                     ) {
                         Text("OK")
                     }
-                })
+                }
+            )
         }
     }
 }

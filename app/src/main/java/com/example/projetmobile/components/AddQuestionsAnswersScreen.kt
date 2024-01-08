@@ -120,7 +120,7 @@ fun AddQuestionAnswersScreen(
                         Text(
                             "Réponse ${index + 1}",
                             color = OutlinedTextFieldColor,
-                            fontSize = 16.sp
+                            fontSize = bodyFS.sp
                         )
                     },
                     modifier = Modifier

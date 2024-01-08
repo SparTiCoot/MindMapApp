@@ -93,7 +93,7 @@ fun AddingSubjectView(onAddSubject: (String) -> Unit, bodyFS: Int) {
                 onValueChange = { newSubjectText = it },
                 label = {
                     Text(
-                        text = "Nom du sujet", fontSize = 16.sp, color = Color.White
+                        text = "Nom du sujet", fontSize = bodyFS.sp, color = Color.White
                     )
                 },
                 textStyle = TextStyle(
@@ -122,7 +122,7 @@ fun AddingSubjectView(onAddSubject: (String) -> Unit, bodyFS: Int) {
                     .padding(end = 5.dp),
             ) {
                 Text(
-                    text = "Ajouter", fontSize = 16.sp
+                    text = "Ajouter", fontSize = bodyFS.sp
                 )
             }
         }
