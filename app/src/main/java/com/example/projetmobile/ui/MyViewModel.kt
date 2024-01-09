@@ -111,7 +111,7 @@ class MyViewModel(application: Application) : AndroidViewModel(application) {
                         val questionsArray = subjectObject.getJSONArray("questions")
                         insertQuestions(questionsArray, subjectId.toInt())
                         snackbarHostState.showSnackbar("Ajout du sujet : '$subjectName' !")
-                    } else snackbarHostState.showSnackbar("Sujet '$subjectName' déjà ajouter !")
+                    } else snackbarHostState.showSnackbar("Sujet '$subjectName' déjà ajouté !")
                 }
             }
         }
