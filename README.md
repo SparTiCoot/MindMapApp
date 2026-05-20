@@ -1,2 +1,2 @@
-OUKHEMANOU Mohand - VILFEU Vincent
+VILFEU Vincent
 ![Projectpng](./Aide-memoire.png)
